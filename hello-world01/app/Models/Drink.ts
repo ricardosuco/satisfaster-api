@@ -9,10 +9,13 @@ export default class Drink extends BaseModel {
   public name: string
 
   @column()
-  public description: string
+  public instructions: string
 
   @column()
   public image: string
+
+  @column()
+  public category: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

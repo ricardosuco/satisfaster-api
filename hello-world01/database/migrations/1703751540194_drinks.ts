@@ -3,12 +3,27 @@ import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 export default class extends BaseSchema {
   protected tableName = 'drinks'
 
-  public async up () {
+  public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.string('name').notNullable()
-      table.text('description', 'longtext').notNullable()
+      table.string('name').unique().notNullable()
+      table.text('instructions', 'longtext').notNullable()
       table.text('image', 'longtext')
+      table
+        .enu('category', [
+          'Ordinary Drink',
+          'Cocktail',
+          'Milk / Float / Shake',
+          'Other/Unknown',
+          'Cocoa',
+          'Shot',
+          'Coffee / Tea',
+          'Homemade Liqueur',
+          'Punch / Party Drink',
+          'Beer',
+          'Soft Drink / Soda',
+        ])
+        .notNullable()
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
@@ -18,7 +33,7 @@ export default class extends BaseSchema {
     })
   }
 
-  public async down () {
+  public async down() {
     this.schema.dropTable(this.tableName)
   }
 }
