@@ -7,7 +7,7 @@ export class UpdateValidator {
   public schema = schema.create({
     name: schema.string({ trim: true }, [rules.maxLength(255)]),
     instructions: schema.string({ trim: true }, [rules.maxLength(255)]),
-    image: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+    image: schema.file.optional({ extnames: ['png', 'jpg', 'jpeg'] }),
     category: schema.enum([
       'Ordinary Drink',
       'Cocktail',

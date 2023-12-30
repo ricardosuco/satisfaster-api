@@ -5,9 +5,12 @@ export class StoreValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    name: schema.string({ trim: true }, [rules.maxLength(255), rules.unique({ table: 'drinks', column: 'name' })]),
+    name: schema.string({ trim: true }, [
+      rules.maxLength(255),
+      rules.unique({ table: 'drinks', column: 'name' }),
+    ]),
     instructions: schema.string({ trim: true }, [rules.maxLength(255)]),
-    image: schema.string.optional({ trim: true }, [rules.maxLength(255)]),
+    image: schema.file.optional({ extnames: ['png', 'jpg', 'jpeg'] }),
     category: schema.enum([
       'Ordinary Drink',
       'Cocktail',

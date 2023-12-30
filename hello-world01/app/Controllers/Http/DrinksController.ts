@@ -1,11 +1,12 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Drink from 'App/Models/Drink'
 import { StoreValidator, UpdateValidator } from 'App/Validators'
+import { randomUUID } from 'node:crypto'
 
 export default class DrinksController {
   public async index({ request }: HttpContextContract) {
     const { name, category } = request.qs()
-    
+
     const drinkList = Drink.query()
     if (category) drinkList.where('category', category)
     if (name) drinkList.where('name', 'ilike', `%${name}%`)
@@ -15,7 +16,24 @@ export default class DrinksController {
 
   public async store({ request }: HttpContextContract) {
     await request.validate(StoreValidator)
-    const drink = request.only(['name', 'instructions', 'image', 'category'])
+    const drink = request.only(['name', 'instructions', 'category'])
+    const image = request.file('image')
+
+    if (image) {
+      const imageName = `${randomUUID()}.${image.extname}`
+      await image?.moveToDisk(
+        'images',
+        {
+          name: imageName,
+        },
+        's3'
+      )
+
+      drink.image = `${process.env.S3_BUCKET_URL}${imageName}`
+    }
+
+    console.log(drink)
+
     return await Drink.create(drink)
   }
 
