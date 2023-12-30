@@ -32,8 +32,6 @@ export default class DrinksController {
       drink.image = `${process.env.S3_BUCKET_URL}${imageName}`
     }
 
-    console.log(drink)
-
     return await Drink.create(drink)
   }
 
