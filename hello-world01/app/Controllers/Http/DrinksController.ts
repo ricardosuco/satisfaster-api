@@ -5,13 +5,14 @@ import { randomUUID } from 'node:crypto'
 
 export default class DrinksController {
   public async index({ request }: HttpContextContract) {
-    const { name, category } = request.qs()
+    const { name, category, page } = request.qs()
+    const limit = 10
 
     const drinkList = Drink.query()
     if (category) drinkList.where('category', category)
     if (name) drinkList.where('name', 'ilike', `%${name}%`)
 
-    return await drinkList
+    return await drinkList.paginate(page, limit)
   }
 
   public async store({ request }: HttpContextContract) {
