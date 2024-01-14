@@ -8,9 +8,17 @@ import { IDrink } from 'models/models'
 @inject()
 export default class DrinksController {
   constructor(private readonly drinkRepository: DrinkRepositoryInterface) {}
-  public async index({ request }: HttpContextContract) {
-    const { name, category, page, rowsPerPage } = request.qs()
-    return this.drinkRepository.getAll({ name, category }, { page, rowsPerPage })
+  public async index({ request, response }: HttpContextContract) {
+    try {
+      const { name, category, page, rowsPerPage } = request.qs()
+      return this.drinkRepository.getAll({ name, category }, { page, rowsPerPage })
+    } catch (error) {
+      if (error?.status && error?.message) {
+        return response.status(error?.status).send({ error: error.message.toString() })
+      } else {
+        return response.status(500).send({ error: 'Internal server error' })
+      }
+    }
   }
 
   public async store({ request, response }: HttpContextContract) {
