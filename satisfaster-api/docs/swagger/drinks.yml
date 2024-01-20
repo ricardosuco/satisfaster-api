@@ -1,0 +1,104 @@
+/:
+  get:
+    tags:
+      - Drinks
+    security: []
+    description: Login
+    parameters:
+      - name: credentials
+        in: body
+        required: true
+        schema:
+          properties:
+            phone:
+              type: string
+              example: '1234567890'
+              required: true
+    produces:
+      - application/json
+    responses:
+      200:
+        description: Success
+  post:
+    tags:
+      - Drinks
+    security: []
+    description: Login
+    parameters:
+      - name: credentials
+        in: body
+        required: true
+        schema:
+          properties:
+            phone:
+              type: string
+              example: '1234567890'
+              required: true
+    produces:
+      - application/json
+    responses:
+      200:
+        description: Success
+/{id}:
+  get:
+    tags:
+      - Drinks
+    security: []
+    description: Login
+    parameters:
+      - name: credentials
+        in: body
+        required: true
+        schema:
+          properties:
+            phone:
+              type: string
+              example: '1234567890'
+              required: true
+    produces:
+      - application/json
+    responses:
+      200:
+        description: Success
+  put:
+    tags:
+      - Drinks
+    security: []
+    description: Login
+    parameters:
+      - name: credentials
+        in: body
+        required: true
+        schema:
+          properties:
+            phone:
+              type: string
+              example: '1234567890'
+              required: true
+    produces:
+      - application/json
+    responses:
+      200:
+        description: Success
+  delete:
+    tags:
+      - Drinks
+    security: []
+    description: Login
+    parameters:
+      - name: credentials
+        in: body
+        required: true
+        schema:
+          properties:
+            phone:
+              type: string
+              example: '1234567890'
+              required: true
+    produces:
+      - application/json
+    responses:
+      200:
+        description: Success
+
+
