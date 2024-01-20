@@ -1,1 +1,367 @@
-{"openapi":"3.0.0","info":{"title":"Application with swagger docs","version":"1.0.0","description":"My application with swagger docs"},"paths":{"/api/users":{},"post":{"tags":["Users"],"requestBody":{"required":true,"content":{"application/json":{"description":"User payload","schema":{"type":"object","properties":{"phone":{"type":"string","example":"James Bond","required":true},"email":{"type":"string","example":"Bond007@example.com","required":true}}}}}},"produces":["application/json"],"responses":{"200":{"description":"Success","content":{"application/json":{"schema":{"$ref":"#/components/schemas/User"}}}}}},"/api/auth/login":{"post":{"tags":["Auth"],"security":[],"description":"Login","parameters":[{"name":"credentials","in":"body","required":true,"schema":{"properties":{"phone":{"type":"string","example":"1234567890","required":true}}}}],"produces":["application/json"],"responses":{"200":{"description":"Success"}}}}},"components":{},"tags":[]}
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Satisfaster API",
+    "version": "1.0.0",
+    "description": "API de manipulação de drinks para o projeto Satisfaster"
+  },
+  "paths": {
+    "/drinks": {
+      "get": {
+        "tags": ["Drinks"],
+        "description": "Listagem de todos os drinks",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "description": "Número da página",
+            "schema": { "example": 1, "type": "number" }
+          },
+          {
+            "in": "query",
+            "name": "rowsPerPage",
+            "required": true,
+            "description": "Número de registros por página",
+            "schema": { "example": 50, "type": "number" }
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "description": "Nome do drink que deseja buscar",
+            "schema": { "type": "string" }
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "description": "Categoria do drink que deseja buscar",
+            "schema": {
+              "type": "enum",
+              "enum": [
+                "Ordinary Drink",
+                "Cocktail",
+                "Milk / Float / Shake",
+                "Other/Unknown",
+                "Cocoa",
+                "Shot",
+                "Coffee / Tea",
+                "Homemade Liqueur",
+                "Punch / Party Drink",
+                "Beer",
+                "Soft Drink / Soda"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "total": { "type": "number", "example": 500 },
+                        "per_page": { "type": "number", "example": 50 },
+                        "current_page": { "type": "number", "example": 1 },
+                        "last_page": { "type": "number", "example": 12 },
+                        "first_page": { "type": "number", "example": 1 },
+                        "first_page_url": { "type": "string", "example": "/?page=1" },
+                        "last_page_url": { "type": "string", "example": "/?page=12" },
+                        "next_page_url": { "type": "string", "example": "/?page=2" },
+                        "previous_page_url": { "type": "string" }
+                      }
+                    },
+                    "drinks": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "number", "example": 1 },
+                          "name": { "type": "string", "example": "Mojito" },
+                          "instructions": {
+                            "type": "string",
+                            "example": "Muddle mint leaves with sugar and lime juice. Add a splash of soda water and fill the glass..."
+                          },
+                          "image": {
+                            "type": "string",
+                            "example": "https://www.thecocktaildb.com/images/media/drink/metwgh1606770327.jpg"
+                          },
+                          "category": { "type": "string", "example": "Cocktail" },
+                          "created_at": {
+                            "type": "date",
+                            "example": "2023-12-28T09:53:20.759-03:00"
+                          },
+                          "updated_at": {
+                            "type": "date",
+                            "example": "2023-12-28T09:53:20.759-03:00"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Internal server error" }
+        }
+      },
+      "post": {
+        "tags": ["Drinks"],
+        "description": "Cria um novo drink",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Nevada",
+                    "unique": true,
+                    "required": true
+                  },
+                  "instructions": {
+                    "type": "string",
+                    "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                    "required": true
+                  },
+                  "category": {
+                    "type": "string,",
+                    "enum": [
+                      "Ordinary Drink",
+                      "Cocktail",
+                      "Milk / Float / Shake",
+                      "Other/Unknown",
+                      "Cocoa",
+                      "Shot",
+                      "Coffee / Tea",
+                      "Homemade Liqueur",
+                      "Punch / Party Drink",
+                      "Beer",
+                      "Soft Drink / Soda"
+                    ],
+                    "example": "Ordinary Drink",
+                    "required": true
+                  },
+                  "image": { "type": "string", "format": "binary", "nullable": true }
+                }
+              },
+              "encoding": { "profileImage": { "contentType": "image/png, image/jpeg" } }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Created" },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "rule": { "type": "string" },
+                          "field": { "type": "string" },
+                          "message": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/drinks/{id}": {
+      "get": {
+        "tags": ["Drinks"],
+        "description": "Buscar Drink a partir do ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID do Drink",
+            "schema": { "type": "string", "example": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "number", "example": 1 },
+                    "name": { "type": "string", "example": "Mojito" },
+                    "instructions": {
+                      "type": "string",
+                      "example": "Muddle mint leaves with sugar and lime juice. Add a splash of soda water and fill the glass..."
+                    },
+                    "image": {
+                      "type": "string",
+                      "example": "https://www.thecocktaildb.com/images/media/drink/metwgh1606770327.jpg"
+                    },
+                    "category": { "type": "string", "example": "Cocktail" },
+                    "created_at": { "type": "date", "example": "2023-12-28T09:53:20.759-03:00" },
+                    "updated_at": { "type": "date", "example": "2023-12-28T09:53:20.759-03:00" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "error": { "type": "string", "example": "Invalid id" } }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "error": { "type": "string", "example": "Drink not found" } }
+                }
+              }
+            }
+          },
+          "500": { "description": "Internal server error" }
+        }
+      },
+      "put": {
+        "tags": ["Drinks"],
+        "description": "Editar/Atualizar Drink",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Nevada",
+                    "unique": true,
+                    "required": true
+                  },
+                  "instructions": {
+                    "type": "string",
+                    "example": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                    "required": true
+                  },
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "Ordinary Drink",
+                      "Cocktail",
+                      "Milk / Float / Shake",
+                      "Other/Unknown",
+                      "Cocoa",
+                      "Shot",
+                      "Coffee / Tea",
+                      "Homemade Liqueur",
+                      "Punch / Party Drink",
+                      "Beer",
+                      "Soft Drink / Soda"
+                    ],
+                    "example": "Ordinary Drink",
+                    "required": true
+                  },
+                  "image": { "type": "string", "format": "binary", "nullable": true }
+                }
+              },
+              "encoding": { "profileImage": { "contentType": "image/png, image/jpeg" } }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK" },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "error": { "type": "string", "example": "Invalid id" } }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "error": { "type": "string", "example": "Drink not found" } }
+                }
+              }
+            }
+          },
+          "500": { "description": "Internal server error" }
+        }
+      },
+      "delete": {
+        "tags": ["Drinks"],
+        "description": "Remover Drink",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "ID do Drink",
+            "schema": { "type": "string", "example": 1 }
+          }
+        ],
+        "produces": ["application/json"],
+        "responses": {
+          "200": { "description": "OK" },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "error": { "type": "string", "example": "Invalid id" } }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "error": { "type": "string", "example": "Drink not found" } }
+                }
+              }
+            }
+          },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    }
+  },
+  "components": {},
+  "tags": []
+}
