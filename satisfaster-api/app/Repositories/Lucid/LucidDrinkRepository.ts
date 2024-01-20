@@ -4,8 +4,8 @@ import { IDrink } from 'models/models'
 
 export default class LucidDrinkRepository implements DrinkRepositoryInterface {
   public async getAll(options, pagination): Promise<Drink[]> {
-    const limit = pagination.rowsPerPage ?? 10
-    const page = pagination.page ?? 1
+    const limit = pagination.rowsPerPage ? pagination.rowsPerPage : 10
+    const page = pagination.page ? pagination.page : 1
 
     const drinkList = Drink.query()
     if (options.category) drinkList.where('category', options.category)
@@ -23,13 +23,13 @@ export default class LucidDrinkRepository implements DrinkRepositoryInterface {
   }
 
   public async update(id: number, drink: IDrink): Promise<Drink> {
-    const _drink = await Drink.findOrFail(id)
-    _drink.merge(drink)
-    return await _drink.save()
+    const foundDrink = await Drink.findOrFail(id)
+    foundDrink.merge(drink)
+    return await foundDrink.save()
   }
 
   public async remove(id: number): Promise<void> {
-    const _drink = await Drink.findOrFail(id)
-    await _drink.delete()
+    const foundDrink = await Drink.findOrFail(id)
+    await foundDrink.delete()
   }
 }
