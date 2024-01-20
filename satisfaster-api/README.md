@@ -26,8 +26,9 @@ Os drinks existentes foram obtidos a partir de um dump do [The cocktail DB](http
 ## Como Iniciar 💻
 
 1. **Clone o Repositório:**
+
    ```bash
-   git clone 
+   git clone
    ```
 
 2. **Instale as Dependências:**
@@ -35,19 +36,20 @@ Os drinks existentes foram obtidos a partir de um dump do [The cocktail DB](http
    cd satisfaster-api
    npm install
    ```
-2. **Adicionar variaveis de ambiente** <br> 
-    Adicione as variaveis de ambiente do projeto partir do .env.example
+3. **Adicionar variaveis de ambiente** <br>
+   Adicione as variaveis de ambiente do projeto partir do .env.example
 
 4. **Rode as migrations:**
+
    ```bash
    node ace migration:run
    ```
 
 5. **Execute o Projeto:**
+
    ```bash
    npm run dev
    ```
 
-4. **Acesse a partir do Insomnia ou Postman:**<br>
+6. **Acesse a partir do Insomnia ou Postman:**<br>
    O servidor ficará disponível em [http://localhost:3333](http://localhost:3333). A partir do insomnia, postman ou software similar, será possível consumir a API, com o auxilia da documentação.
-
