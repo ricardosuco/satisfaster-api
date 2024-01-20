@@ -22,8 +22,8 @@ export default class DrinksController {
   }
 
   public async store({ request, response }: HttpContextContract) {
+    await request.validate(StoreValidator)
     try {
-      await request.validate(StoreValidator)
       const drink: IDrink = request.only(['name', 'instructions', 'category'])
       const image = request.file('image')
       if (image) {
@@ -31,7 +31,8 @@ export default class DrinksController {
         await image?.moveToDisk('images', { name: imageName }, 's3')
         drink.image = `${process.env.S3_BUCKET_URL}${imageName}`
       }
-      return this.drinkRepository.create(drink)
+      await this.drinkRepository.create(drink)
+      return response.created()
     } catch (error) {
       if (error?.status && error?.message) {
         return response.status(error?.status).send({ error: error.message.toString() })
@@ -46,9 +47,11 @@ export default class DrinksController {
       if (isNaN(Number(params.id))) {
         return response.status(400).send({ error: 'Invalid id' })
       }
-      return this.drinkRepository.getById(params.id)
+      const drink = await this.drinkRepository.getById(params.id)
+      return response.status(200).send(drink)
     } catch (error) {
       if (error?.status && error?.message) {
+        if (error?.status === 404) return response.status(404).send({ error: 'Drink not found' })
         return response.status(error?.status).send({ error: error.message.toString() })
       } else {
         return response.status(500).send({ error: 'Internal server error' })
@@ -57,15 +60,17 @@ export default class DrinksController {
   }
 
   public async update({ request, params, response }: HttpContextContract) {
+    if (isNaN(Number(params.id))) {
+      return response.status(400).send({ error: 'Invalid id' })
+    }
+    await request.validate(UpdateValidator)
     try {
-      if (isNaN(Number(params.id))) {
-        return response.status(400).send({ error: 'Invalid id' })
-      }
-      await request.validate(UpdateValidator)
       const updatedDrink: IDrink = request.only(['name', 'instructions', 'image', 'category'])
-      return this.drinkRepository.update(params.id, updatedDrink)
+      const drink = await this.drinkRepository.update(params.id, updatedDrink)
+      return response.status(200).send(drink)
     } catch (error) {
       if (error?.status && error?.message) {
+        if (error?.status === 404) return response.status(404).send({ error: 'Drink not found' })
         return response.status(error?.status).send({ error: error.message.toString() })
       } else {
         return response.status(500).send({ error: 'Internal server error' })
@@ -78,9 +83,11 @@ export default class DrinksController {
       if (isNaN(Number(params.id))) {
         return response.status(400).send({ error: 'Invalid id' })
       }
-      return await this.drinkRepository.remove(params.id)
+      await this.drinkRepository.remove(params.id)
+      return response.status(200)
     } catch (error) {
       if (error?.status && error?.message) {
+        if (error?.status === 404) return response.status(404).send({ error: 'Drink not found' })
         return response.status(error?.status).send({ error: error.message.toString() })
       } else {
         return response.status(500).send({ error: 'Internal server error' })
