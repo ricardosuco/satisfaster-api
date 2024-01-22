@@ -28,7 +28,7 @@ Os drinks existentes foram obtidos a partir de um dump do [The cocktail DB](http
 1. **Clone o Repositório:**
 
    ```bash
-   git clone
+   git clone https://github.com/ricardosuco/satisfaster-api.git
    ```
 
 2. **Instale as Dependências:**
@@ -52,4 +52,4 @@ Os drinks existentes foram obtidos a partir de um dump do [The cocktail DB](http
    ```
 
 6. **Acesse a partir do Insomnia ou Postman:**<br>
-   O servidor ficará disponível em [http://localhost:3333](http://localhost:3333). A partir do insomnia, postman ou software similar, será possível consumir a API, com o auxilia da documentação.
+   O servidor ficará disponível em [http://localhost:3333](http://localhost:3333). A partir do insomnia, postman ou software similar, será possível consumir a API, com o auxilio da [documentação](http://localhost:3333/docs).
