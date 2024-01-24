@@ -295,6 +295,24 @@
                 error:
                   type: string
                   example: 'Invalid id'
+      422:
+        description: Unprocessable Entity
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                errors:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      rule:
+                        type: string
+                      field:
+                        type: string
+                      message:
+                        type: string
       404:
         description: Not Found
         content:
