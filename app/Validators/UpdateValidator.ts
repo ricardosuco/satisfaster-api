@@ -5,7 +5,10 @@ export class UpdateValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    name: schema.string({ trim: true }, [rules.maxLength(255)]),
+    name: schema.string({ trim: true }, [
+      rules.maxLength(255),
+      rules.unique({ table: 'drinks', column: 'name' }),
+    ]),
     instructions: schema.string({ trim: true }, [rules.maxLength(255)]),
     image: schema.file.optional({ extnames: ['png', 'jpg', 'jpeg'] }),
     category: schema.enum([
